@@ -1,34 +1,53 @@
 <?php
-// test_insert.php
+// test_students.php
 
-$host = '127.0.0.1';
-$db   = 'yii2advanced';
-$user = 'root';
-$pass = 'root'; // sizning root parolingiz
-$charset = 'utf8';
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/vendor/yiisoft/yii2/Yii.php';
 
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-$options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+// Yii console konfiguratsiyasi
+$config = [
+    'id' => 'console-app',
+    'basePath' => __DIR__,
+    'components' => [
+        'db' => [
+            'class' => \yii\db\Connection::class,
+            'dsn' => 'mysql:host=127.0.0.1;dbname=yii2advanced',
+            'username' => 'root',      // sizning MySQL username
+            'password' => 'root',      // sizning MySQL password
+            'charset' => 'utf8',
+        ],
+    ],
 ];
 
-try {
-    $pdo = new PDO($dsn, $user, $pass, $options);
+$application = new yii\console\Application($config);
 
-    $stmt = $pdo->prepare("
-        INSERT INTO tasks (title, description, created_at, updated_at) 
-        VALUES (?, ?, ?, ?)
-    ");
-    $stmt->execute([
-        'Birinchi vazifa',
-        'Bu birinchi test vazifasi',
-        time(),
-        time()
-    ]);
+// ----------------------
+// 1️⃣ Yangi student qo'shish
+// ----------------------
+$application->db->createCommand()->insert('students', [
+    'fullname'   => 'Ali Valiyev',
+    'group'      => '6A',
+    'age'        => 15,
+    'created_at' => time(),
+    'updated_at' => time(),
+])->execute();
 
-    echo "Ma'lumot qo'shildi!\n";
+$application->db->createCommand()->insert('students', [
+    'fullname'   => 'Sardor Karimov',
+    'group'      => '6B',
+    'age'        => 16,
+    'created_at' => time(),
+    'updated_at' => time(),
+])->execute();
 
-} catch (\PDOException $e) {
-    echo "Xatolik: " . $e->getMessage() . "\n";
+echo "Ma'lumotlar qo'shildi!\n";
+
+// ----------------------
+// 2️⃣ Barcha studentlarni chiqarish
+// ----------------------
+$students = $application->db->createCommand('SELECT * FROM students')->queryAll();
+
+echo "Jadvaldagi barcha studentlar:\n";
+foreach ($students as $student) {
+    echo "ID: {$student['id']}, Fullname: {$student['fullname']}, Group: {$student['group']}, Age: {$student['age']}\n";
 }
