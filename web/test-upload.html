@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+<html>
+<head><title>Profile Upload Test</title></head>
+<body>
+<h2>Upload Profile Picture</h2>
+<form id='uploadForm' enctype='multipart/form-data'>
+<input type='file' name='UserForm[profile_pic]' required>
+<button type='submit'>Upload</button>
+</form>
+<pre id='result'></pre>
+<script>
+document.getElementById('uploadForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const data = new FormData(this);
+    fetch('index.php?r=user/upload-profile-pic',{method:'POST',body:data})
+    .then(res=>res.json())
+    .then(json=>{document.getElementById('result').textContent=JSON.stringify(json,null,2);})
+    .catch(err=>console.error(err));
+});
+</script>
+</body>
+</html>
