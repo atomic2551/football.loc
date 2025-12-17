@@ -12,7 +12,6 @@ if (!$city1 || !$city2) {
 }
 
 // Fake weather data (demo)
-// Bu joyni keyinchalik real API ga almashtiramiz
 $weatherData = [
     "Tashkent" => 18,
     "Samarkand" => 16,
@@ -44,4 +43,3 @@ echo json_encode([
     "city2" => ["name" => $city2, "temp" => $temp2],
     "result" => $result
 ], JSON_UNESCAPED_UNICODE);
-
